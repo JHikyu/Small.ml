@@ -2,8 +2,10 @@
 <html lang="en" dir="ltr">
    <head>
       <meta charset="utf-8">
-      <title></title>
+      <title>Small - URL Shorter</title>
+
       <link rel="stylesheet" href="css/index.css">
+      <script src="https://kit.fontawesome.com/c8e4359d1c.js" crossorigin="anonymous"></script>
    </head>
    <body>
       <div class="main">
@@ -15,7 +17,10 @@
             <span>URL</span><br>
             <input id="in" onkeyup="sendValue(event, this.value)" type="text" placeholder="Website to be shortened">
          </div>
+
+         <i class="fab fa-github github"  onclick="window.open('https://small.ml/umn', '_blank')"></i>
       </div>
+
    </body>
    <footer>
       <script src="js/socketio.js" charset="utf-8"></script>
