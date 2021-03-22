@@ -13,7 +13,7 @@
 
          <div class="form">
             <span>URL</span><br>
-            <input onkeyup="sendValue(this.value)" type="text" placeholder="Website to be shortened">
+            <input onkeyup="sendValue(event, this.value)" type="text" placeholder="Website to be shortened">
          </div>
       </div>
    </body>
@@ -22,8 +22,11 @@
       <script type="text/javascript">
          var socket = io(window.location.origin);
 
-         function sendValue(value) {
-            socket.emit('checkUrl', value)
+         function sendValue(event, value) {
+            var x = event.which || event.keyCode;
+            if(x == 13) {
+               socket.emit('checkUrl', value)
+            }
          }
 
 
