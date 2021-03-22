@@ -46,12 +46,14 @@ io.on('connection', function(socket) {
    socket.on('checkUrl', (value) => {
       console.log(value);
 
-      if (validUrl.isUri(value)){
+      if(validUrl.isUri(value)) {
+         console.log(1);
 
          var token = randomToken(3);
-         var date = moment();
+         var date = moment().add(180, 'days').unix();
+         console.log(token, date);
 
-         db.find('links')
+         db.get('links')
             .push({ url: value, short: token, expiry: date })
             .write()
 
