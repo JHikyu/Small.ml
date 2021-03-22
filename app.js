@@ -37,4 +37,13 @@ io.on('connection', function(socket) {
    socket.on('disconnect', function () {
       console.log('A user disconnected');
    });
+
+
+
+   socket.on('checkUrl', (value) => {
+      console.log(value);
+   })
+
+
+
 });

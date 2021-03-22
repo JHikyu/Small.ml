@@ -13,7 +13,7 @@
 
          <div class="form">
             <span>URL</span><br>
-            <input type="text" placeholder="Website to be shortened">
+            <input onkeyup="sendValue(this.value)" type="text" placeholder="Website to be shortened">
          </div>
       </div>
    </body>
@@ -21,6 +21,12 @@
       <script src="js/socketio.js" charset="utf-8"></script>
       <script type="text/javascript">
          var socket = io(window.location.origin);
+
+         function sendValue(value) {
+            socket.emit('checkUrl', value)
+         }
+
+
       </script>
    </footer>
 </html>
