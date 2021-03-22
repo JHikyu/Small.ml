@@ -30,3 +30,19 @@
    font-weight: bold;
    color: white;
 }
+
+
+
+.main .form {
+   position: absolute;
+   left: 50%;
+   top: 50%;
+   transform: translate(-50%, -50%);
+}
+.main .form input {
+   height: 60px;
+   width: 550px;
+   background-color: white;
+   border: none;
+   border-radius: 5px;
+}
