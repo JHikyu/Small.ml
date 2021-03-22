@@ -1,6 +1,6 @@
 # Small - URL Shorter
 
-Foobar is a Python library for dealing with word pluralization.
+An open source URL shorter that was made in less than 2 hours
 
 ## Installation
 
