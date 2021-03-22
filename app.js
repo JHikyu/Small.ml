@@ -26,7 +26,7 @@ app.get('/uygh/:id', function(req, res) {
 
 
 
-app.get('/asdf', function(req, res) {
+app.get('/', function(req, res) {
    res.render('index.ejs');
 });
 
