@@ -3,8 +3,8 @@ var app = express();
 const http = require('http').Server(app);
 const https = require('http');
 
-http.listen(process.env.PORT || 3000, function() {
-     console.log('listening on *:3000');
+http.listen(process.env.PORT || 80, function() {
+     console.log('listening on *:80');
 });
 
 var moment = require('moment');
