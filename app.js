@@ -20,16 +20,37 @@ db.defaults({ links: [] })
 
 app.use(express.static('public'));
 
-app.get('/uygh/:id', function(req, res) {
-   // req.params.id
-});
+
 
 
 
 app.get('/', function(req, res) {
    res.render('index.ejs');
 });
+app.get('/:id', function(req, res) {
+   // req.params.id => hi
 
+   var link = db.get('links')
+      .find({ short: req.params.id })
+      .value()
+
+
+   var date = moment().add(180, 'days').unix();
+
+
+   if(link) {
+      db.get('links')
+         .find({ short: req.params.id })
+         .set('expiry', date)
+         .write()
+
+      res.redirect(link.url);
+   }
+   else {
+      res.render('505.ejs');
+   }
+
+});
 
 
 io.on('connection', function(socket) {
@@ -75,7 +96,7 @@ io.on('connection', function(socket) {
             .push({ url: value, short: token, expiry: date })
             .write()
 
-
+         socket.emit('successfullyCreated', token)
 
       }
       else {
@@ -86,3 +107,23 @@ io.on('connection', function(socket) {
 
 
 });
+
+
+
+
+
+
+setInterval(function(){
+   var links = db.get('links')
+      .sortBy('expiry')
+      .take(1)
+      .value()
+   links = links[0]
+   var date = moment().unix();
+
+   if(links.expiry - date <= 0) {
+      var links = db.get('links')
+         .remove({ short: links.short })
+         .write()
+   }
+}, 2000)
