@@ -1,4 +1,4 @@
-# Foobar
+# Small - URL Shorter
 
 Foobar is a Python library for dealing with word pluralization.
 
