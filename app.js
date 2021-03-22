@@ -7,6 +7,9 @@ http.listen(3000, function() {
      console.log('listening on *:3000');
 });
 
+var moment = require('moment');
+var randomToken = require('random-token').create('abcdefghijklmnopqrstuvwxzyABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789');
+var validUrl = require('valid-url');
 const io = require('socket.io')(http);
 const low = require('lowdb')
 const FileSync = require('lowdb/adapters/FileSync')
@@ -42,6 +45,22 @@ io.on('connection', function(socket) {
 
    socket.on('checkUrl', (value) => {
       console.log(value);
+
+      if (validUrl.isUri(value)){
+
+         var token = randomToken(3);
+         var date = moment();
+
+         db.find('links')
+            .push({ url: value, short: token, expiry: date })
+            .write()
+
+
+
+      }
+      else {
+         console.log('Not a URI');
+      }
    })
 
 
