@@ -44,14 +44,32 @@ io.on('connection', function(socket) {
 
 
    socket.on('checkUrl', (value) => {
-      console.log(value);
 
       if(validUrl.isUri(value)) {
-         console.log(1);
 
-         var token = randomToken(3);
+         var token;
          var date = moment().add(180, 'days').unix();
-         console.log(token, date);
+         var inDB;
+         var count = 0;
+
+         do {
+            count++
+            token = randomToken(3);
+
+            if(count >= 50)
+               token = randomToken(4);
+            if(count >= 100)
+               token = randomToken(5);
+            if(count >= 150)
+               token = randomToken(6);
+
+            inDB = db.get('links')
+               .find({ short: token })
+               .value()
+
+         } while(inDB)
+
+
 
          db.get('links')
             .push({ url: value, short: token, expiry: date })
