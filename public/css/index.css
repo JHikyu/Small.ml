@@ -45,4 +45,23 @@
    background-color: white;
    border: none;
    border-radius: 5px;
+
+   color: #37404B;
+   font-size: 18px;
+   font-family: Roboto;
+}
+.main .form input::placeholder {
+   color: #37404B;
+   transform: translate(25px, 0);
+   font-size: 18px;
+   font-family: Roboto;
+}
+.main .form span {
+   display: inline-block;
+   padding: 10px;
+
+   color: white;
+   font-family: Roboto;
+   font-weight: bold;
+   font-size: 12px;
 }
