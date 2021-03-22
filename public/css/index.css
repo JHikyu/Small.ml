@@ -74,3 +74,12 @@
    color: #677dc4;
    cursor: pointer;
 }
+.main p {
+   position: absolute;
+   left: 50%;
+   bottom: 30px;
+   transform: translate(-50%, 0);
+
+   font-family: Roboto;
+   color: white;
+}

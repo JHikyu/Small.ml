@@ -25,7 +25,10 @@ app.use(express.static('public'));
 
 
 app.get('/', function(req, res) {
-   res.render('index.ejs');
+   var shorts = db.get('links')
+      .size()
+      .value()
+   res.render('index.ejs', { connections: connections+1, shorts: shorts });
 });
 app.get('/:id', function(req, res) {
    // req.params.id => hi
@@ -53,12 +56,16 @@ app.get('/:id', function(req, res) {
 });
 
 
+var connections = 0;
 io.on('connection', function(socket) {
+   connections++
+
    console.log('A user connected');
    socket.on('restart', (data) => {
       exit(1);
    })
    socket.on('disconnect', function () {
+      connections--
       console.log('A user disconnected');
    });
 

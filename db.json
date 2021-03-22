@@ -193,22 +193,22 @@
     {
       "url": "https://small.ml/bYM",
       "short": "D3T",
-      "expiry": 1632000019
+      "expiry": 1632003695
     },
     {
       "url": "https://small.ml/D3T",
       "short": "fl3",
-      "expiry": 1632000019
+      "expiry": 1632003695
     },
     {
       "url": "https://small.ml/fl3",
       "short": "MJ1",
-      "expiry": 1632000019
+      "expiry": 1632003694
     },
     {
       "url": "https://small.ml/MJ1",
       "short": "NmS",
-      "expiry": 1632000019
+      "expiry": 1632003694
     },
     {
       "url": "https://small.ml/NmS",
@@ -218,12 +218,12 @@
     {
       "url": "https://small.ml/NmS",
       "short": "PCH",
-      "expiry": 1632000019
+      "expiry": 1632003693
     },
     {
       "url": "https://small.ml/PCH",
       "short": "zLT",
-      "expiry": 1632000019
+      "expiry": 1632003693
     },
     {
       "url": "https://small.ml/PCH",
@@ -233,12 +233,12 @@
     {
       "url": "https://small.ml/zLT",
       "short": "EYD",
-      "expiry": 1632000020
+      "expiry": 1632003692
     },
     {
       "url": "https://small.ml/EYD",
       "short": "yGQ",
-      "expiry": 1632000020
+      "expiry": 1632003692
     },
     {
       "url": "https://small.ml/yGQ",
@@ -248,22 +248,22 @@
     {
       "url": "https://small.ml/yGQ",
       "short": "zQg",
-      "expiry": 1632000020
+      "expiry": 1632003691
     },
     {
       "url": "https://small.ml/zQg",
       "short": "83P",
-      "expiry": 1632000020
+      "expiry": 1632003691
     },
     {
       "url": "https://small.ml/83P",
       "short": "Ef0",
-      "expiry": 1632000020
+      "expiry": 1632003690
     },
     {
       "url": "https://small.ml/Ef0",
       "short": "CBI",
-      "expiry": 1632000020
+      "expiry": 1632003690
     },
     {
       "url": "https://small.ml/CBI",
@@ -333,12 +333,22 @@
     {
       "url": "https://docs.google.com/spreadsheets/d/1aeN8V4RbqtwYkcZoNUAbPqGEhzbNlZeV8tPcclt_oC4/edit#gid=1654634094",
       "short": "PsF",
-      "expiry": 1632000264
+      "expiry": 1632000477
     },
     {
       "url": "https://fh-dortmund.webex.com/meet/nadja.bauer",
       "short": "fum",
       "expiry": 1632000260
+    },
+    {
+      "url": "https://github.com/JHikyu/Small.ml",
+      "short": "mKP",
+      "expiry": 1632000563
+    },
+    {
+      "url": "https://github.com/JHikyu/Small.ml",
+      "short": "umn",
+      "expiry": 1632004085
     }
   ]
 }
