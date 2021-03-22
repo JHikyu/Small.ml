@@ -17,8 +17,14 @@ db.defaults({ links: [] })
 
 app.use(express.static('public'));
 
-app.get('/:id', function(req, res) {
+app.get('/uygh/:id', function(req, res) {
    // req.params.id
+});
+
+
+
+app.get('/asdf', function(req, res) {
+   res.render('index.ejs');
 });
 
 

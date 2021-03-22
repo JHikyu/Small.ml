@@ -15,5 +15,11 @@
   "bugs": {
     "url": "https://github.com/JHikyu/Small.ml/issues"
   },
-  "homepage": "https://github.com/JHikyu/Small.ml#readme"
+  "homepage": "https://github.com/JHikyu/Small.ml#readme",
+  "dependencies": {
+    "ejs": "^3.1.6",
+    "express": "^4.17.1",
+    "lowdb": "^1.0.0",
+    "socket.io": "^4.0.0"
+  }
 }
