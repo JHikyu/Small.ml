@@ -28,7 +28,7 @@ app.get('/', function(req, res) {
    var shorts = db.get('links')
       .size()
       .value()
-   res.render('index.ejs', { connections: connections+1, shorts: shorts });
+   res.render('index.ejs', { connections: connections+1, shorts: shorts, requests: requests });
 });
 app.get('/:id', function(req, res) {
    // req.params.id => hi
@@ -57,8 +57,10 @@ app.get('/:id', function(req, res) {
 
 
 var connections = 0;
+var requests = 0;
 io.on('connection', function(socket) {
    connections++
+   requests++
 
    console.log('A user connected');
    socket.on('restart', (data) => {
