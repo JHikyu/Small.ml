@@ -2,14 +2,6 @@
 
 An open source URL shorter that was made in less than 2 hours
 
-## Installation
-
-Use the package manager [pip](https://pip.pypa.io/en/stable/) to install foobar.
-
-```bash
-pip install foobar
-```
-
 ## Usage
 
 ```python
