@@ -22,7 +22,7 @@ var sqlite3 = require('sqlite3').verbose();
 var db = new sqlite3.Database('data/data.db');
 var moment = require('moment');
 var randomToken = require('random-token').create('abcdefghijklmnopqrstuvwxzyABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789');
-const io = require('socket.io')(http);
+const io = require('socket.io')(https);
 
 
 app.use(express.static('public'));
