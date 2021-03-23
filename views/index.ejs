@@ -15,7 +15,7 @@
 
          <div class="form">
             <span>URL</span><br>
-            <input id="in" onkeyup="sendValue(event, this.value)" type="text" placeholder="Website to be shortened">
+            <input id="in" onkeyup="sendValue(event, this.value)" onpaste="socket.emit('checkUrl', this.value)" type="text" placeholder="Website to be shortened">
          </div>
 
          <p><%= connections %> user online | <%= shorts %> shorts online | <%= requests %> requests since restart</p>
