@@ -28,10 +28,58 @@ app.get('/', function(req, res) {
    var shorts = db.get('links')
       .size()
       .value()
+
    res.render('index.ejs', { connections: connections, shorts: shorts, requests: requests });
 });
+app.get('/api/:version/:one', function(req, res) {
+   if(req.params.version == 'v1') {
+      if(req.params.one == 'create') {
+         if(!req.query.url) {
+            res.send({ error: "url not specified" })
+         } else {
+            if(validUrl.isUri(req.query.url)) {
+               var expiryDays = req.query.expire || 180
+
+               var token;
+               var date = moment().add(expiryDays, 'days').unix();
+               var inDB;
+               var count = 0;
+
+               do {
+                  count++
+                  token = randomToken(3);
+
+                  if(count >= 50)
+                     token = randomToken(4);
+                  if(count >= 100)
+                     token = randomToken(5);
+                  if(count >= 150)
+                     token = randomToken(6);
+
+                  inDB = db.get('links')
+                     .find({ short: token })
+                     .value()
+
+               } while(inDB)
+
+               db.get('links')
+                  .push({ url: req.query.url, short: token, expiry: date })
+                  .write()
+
+               res.send({ short: token, expiry: date, url: req.query.url, complete_shorten_url: "http://www.small.ml/" + token, shorten_url: "small.ml/" + token })
+
+            }
+            else {
+               res.send({ error: "invalid url" })
+            }
+         }
+      }
+
+   }
+
+})
+
 app.get('/:id', function(req, res) {
-   // req.params.id => hi
 
    var link = db.get('links')
       .find({ short: req.params.id })
@@ -47,7 +95,9 @@ app.get('/:id', function(req, res) {
          .set('expiry', date)
          .write()
 
-      res.redirect(link.url);
+      setTimeout(function() {
+         res.redirect(link.url);
+      }, 1)
    }
    else {
       res.render('505.ejs');
