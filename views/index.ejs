@@ -38,11 +38,13 @@
 
          function sendValue(event, value) {
             if(!value) {
+               event = event.replace('small.ml', '')
                socket.emit('checkUrl', event)
             }
 
             var x = event.which || event.keyCode;
             if(x == 13) {
+               value = value.replace('small.ml', '')
                socket.emit('checkUrl', value)
             }
          }
