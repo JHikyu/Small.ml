@@ -7,6 +7,8 @@ http.listen(process.env.PORT || 80, function() {
      console.log('listening on *:80');
 });
 
+
+var Regex = require("regex");
 var moment = require('moment');
 var randomToken = require('random-token').create('abcdefghijklmnopqrstuvwxzyABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789');
 var validUrl = require('valid-url');
@@ -17,6 +19,11 @@ const adapter = new FileSync('db.json')
 const db = low(adapter)
 db.defaults({ links: [] })
    .write()
+
+
+
+
+
 
 app.use(express.static('public'));
 
@@ -37,7 +44,12 @@ app.get('/api/:version/:one', function(req, res) {
          if(!req.query.url) {
             res.send({ error: "url not specified" })
          } else {
-            if(validUrl.isUri(req.query.url)) {
+
+
+            var regex = /^((ftp|http|https):\/\/)?www\.([A-z]+)\.([A-z]{2,})/
+
+            if(regex.test(value)) {
+
                var expiryDays = req.query.expire || 180
                if(expiryDays > 180) {
                   res.send({ error: "max 180 days allowed" })
@@ -129,7 +141,9 @@ io.on('connection', function(socket) {
 
    socket.on('checkUrl', (value) => {
 
-      if(validUrl.isUri(value)) {
+      var regex = /^((ftp|http|https):\/\/)?www\.([A-z]+)\.([A-z]{2,})/
+
+      if(regex.test(value)) {
 
          var token;
          var date = moment().add(180, 'days').unix();
@@ -163,7 +177,7 @@ io.on('connection', function(socket) {
 
       }
       else {
-         console.log('Not a URI');
+         console.log('Not a URI1');
       }
    })
 
