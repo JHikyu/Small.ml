@@ -65,7 +65,6 @@ app.get('/api/:version/:one', function(req, res) {
                      res.send({ error: "short already used" })
                   }
                })
-               res.send({ error: "short already used" })
 
             }
             else {
