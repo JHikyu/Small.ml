@@ -12,6 +12,9 @@ const https = require('https').Server(ssl_options, app)
 http.listen(process.env.PORT || 80, function() {
      console.log('listening on *:80');
 });
+https.listen(process.env.PORT || 443, function() {
+     console.log('ssl listening on *:443');
+});
 
 
 
