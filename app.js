@@ -55,8 +55,10 @@ app.get('/api/:version/:one', function(req, res) {
                if(req.query.short) {
                   if(req.query.short.length > 5)
                      var token = req.query.short
-                  else
-                     var token = randomToken(3)
+                  else {
+                     res.send({ error: "custom short must have at least a length of 6" })
+                     return
+                  }
                }
                else {
                   var token = randomToken(3)
@@ -69,6 +71,7 @@ app.get('/api/:version/:one', function(req, res) {
                      console.log(req.query.url)
                      db.run("INSERT INTO links (short, url, expiry, key) VALUES('"+token+"', '"+req.query.url+"', "+date+", '"+randomToken(6)+"');")
                      res.send({ short: token, expiry: date, url: req.query.url, complete_shorten_url: "http://www.small.ml/" + token, shorten_url: "small.ml/" + token })
+                     console.log("New API usage: [create] short: " + req.query.short, ', url: ' + req.query.url);
                   }
                   else {
                      res.send({ error: "short already used" })
