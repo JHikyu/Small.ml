@@ -90,6 +90,11 @@ app.get('/api/:version/:one', function(req, res) {
 })
 
 app.get('/:id', function(req, res) {
+   requests++
+   db.all("SELECT COUNT(short) AS sum FROM links", [], (err, rows) => {
+      io.emit('bottomInfoDock', {connections: connections, requests: requests, shorts: rows[0].sum})
+   })
+
    var date = moment().add(180, 'days').unix()
 
       db.all("SELECT * FROM links WHERE short = '"+req.params.id+"'", [], (err, rows) => {
@@ -110,6 +115,10 @@ var requests = 0;
 io.on('connection', function(socket) {
    connections++
    requests++
+   db.all("SELECT COUNT(short) AS sum FROM links", [], (err, rows) => {
+      io.emit('bottomInfoDock', {connections: connections, requests: requests, shorts: rows[0].sum})
+   })
+
 
    console.log('A user connected')
    // socket.on('restart', (data) => {
@@ -117,12 +126,16 @@ io.on('connection', function(socket) {
    // })
    socket.on('disconnect', function () {
       connections--
+      db.all("SELECT COUNT(short) AS sum FROM links", [], (err, rows) => {
+         io.emit('bottomInfoDock', {connections: connections, requests: requests, shorts: rows[0].sum})
+      })
       console.log('A user disconnected');
    });
 
 
 
    socket.on('checkUrl', (value) => {
+      requests++
 
       var regex = /^((ftp|http|https):\/\/)?(www\.)?([A-z]+)\.([A-z]{2,})/
 
@@ -141,6 +154,10 @@ io.on('connection', function(socket) {
             else {
                socket.emit('successfullyCreated', rows[0].short)
             }
+
+            db.all("SELECT COUNT(short) AS sum FROM links", [], (err, rows) => {
+               io.emit('bottomInfoDock', {connections: connections, requests: requests, shorts: rows[0].sum})
+            })
          })
 
       }

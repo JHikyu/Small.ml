@@ -26,7 +26,7 @@
 
          </div>
 
-         <p><%= connections %> user online | <%= shorts %> shorts online | <%= requests %> requests since restart</p>
+         <p id="infoDock"><%= connections %> user online | <%= shorts %> shorts online | <%= requests %> requests since restart</p>
          <i class="fab fa-github github"  onclick="window.open('https://github.com/JHikyu/Small.ml', '_blank')"></i>
       </div>
 
@@ -53,6 +53,9 @@
             document.getElementById('in').value = window.location.href + token;
          })
 
+         socket.on('bottomInfoDock', data => {
+            document.getElementById('infoDock').innerHTML = data.connections+' user online | '+data.shorts+' shorts online | '+data.requests+' requests since restart'
+         })
 
       </script>
    </footer>
