@@ -17,20 +17,12 @@ http.listen(process.env.PORT || 80, function() {
 
 var sqlite3 = require('sqlite3').verbose();
 var db = new sqlite3.Database('data/data.db');
-var Regex = require("regex");
 var moment = require('moment');
 var randomToken = require('random-token').create('abcdefghijklmnopqrstuvwxzyABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789');
-var validUrl = require('valid-url');
 const io = require('socket.io')(http);
 
 
-
-
-
 app.use(express.static('public'));
-
-
-
 
 
 app.get('/', function(req, res) {

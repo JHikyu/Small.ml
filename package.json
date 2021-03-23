@@ -23,9 +23,7 @@
     "lowdb": "^1.0.0",
     "moment": "^2.29.1",
     "random-token": "0.0.8",
-    "regex": "^0.1.1",
     "socket.io": "^4.0.0",
-    "sqlite3": "^5.0.2",
-    "valid-url": "^1.0.9"
+    "sqlite3": "^5.0.2"
   }
 }
