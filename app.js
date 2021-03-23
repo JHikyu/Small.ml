@@ -28,7 +28,14 @@ const io = require('socket.io')(https);
 app.use(express.static('public'));
 
 
+
+app2.get('*', function(req, res){
+   res.redirect("https://"+req.hostname+req.url)
+})
+
+
 app.get('/', function(req, res) {
+
    db.all("SELECT COUNT(short) AS sum FROM links", [], (err, rows) => {
       res.render('index.ejs', { connections: connections, shorts: rows[0].sum, requests: requests })
    })
