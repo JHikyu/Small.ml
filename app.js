@@ -40,7 +40,7 @@ app.get('/api/:version/:one', function(req, res) {
          if(!req.query.url) {
             res.send({ error: "url not specified" })
          } else {
-
+            req.query.url = req.query.url.replace('small.ml', '')
 
             var regex = /^((ftp|http|https):\/\/)?(www\.)?([A-z]+)\.([A-z]{2,})/
 
