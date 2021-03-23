@@ -35,7 +35,6 @@ app2.get('*', function(req, res){
 
 
 app.get('/', function(req, res) {
-
    db.all("SELECT COUNT(short) AS sum FROM links", [], (err, rows) => {
       res.render('index.ejs', { connections: connections, shorts: rows[0].sum, requests: requests })
    })
@@ -148,11 +147,6 @@ var connections = 0;
 var requests = 0;
 io.on('connection', function(socket) {
    connections++
-   db.get("SELECT * FROM info", [], (err, row) => {
-      db.run("UPDATE info SET requests = '"+(row.requests+1)+"' WHERE requests = '"+row.requests+"'")
-      requests = (row.requests+1)
-   })
-
 
    db.all("SELECT COUNT(short) AS sum FROM links", [], (err, rows) => {
       io.emit('bottomInfoDock', {connections: connections, requests: requests, shorts: rows[0].sum})
