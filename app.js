@@ -39,6 +39,10 @@ app.get('/api/:version/:one', function(req, res) {
          } else {
             if(validUrl.isUri(req.query.url)) {
                var expiryDays = req.query.expire || 180
+               if(expiryDays > 180) {
+                  res.send({ error: "max 180 days allowed" })
+                  return
+               }
 
                var token;
                var date = moment().add(expiryDays, 'days').unix();
