@@ -52,10 +52,17 @@ app.get('/api/:version/:one', function(req, res) {
                   return
                }
 
-               var token
+               if(req.query.short) {
+                  if(req.query.short.length > 5)
+                     var token = req.query.short
+                  else
+                     var token = randomToken(3)
+               }
+               else {
+                  var token = randomToken(3)
+               }
                var date = moment().add(expiryDays, 'days').unix()
                var inDB
-               token = randomToken(3)
 
                db.all("SELECT COUNT(short) AS sum FROM links WHERE short = '"+token+"'", [], (err, rows) => {
                   if(rows[0].sum == 0) {
