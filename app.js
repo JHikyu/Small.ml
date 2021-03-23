@@ -55,8 +55,8 @@ app.get('/api/:version/:one', function(req, res) {
                var inDB
                token = randomToken(3)
 
-               db.all("SELECT * FROM links WHERE short = '"+token+"'", [], (err, rows) => {
-                  if(rows.length == 0) {
+               db.all("SELECT COUNT(short) AS sum FROM links WHERE short = '"+token+"'", [], (err, rows) => {
+                  if(rows[0].sum == 0) {
                      console.log(req.query.url)
                      db.run("INSERT INTO links (short, url, expiry, key) VALUES('"+token+"', '"+req.query.url+"', "+date+", '"+randomToken(6)+"');")
                      res.send({ short: token, expiry: date, url: req.query.url, complete_shorten_url: "http://www.small.ml/" + token, shorten_url: "small.ml/" + token })
