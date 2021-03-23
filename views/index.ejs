@@ -3,9 +3,8 @@
    <head>
       <meta charset="utf-8">
       <meta name="Language" content="en">
-      <meta name="Keywords" content="url shortener, small url, domain">
+      <meta name="Keywords" content="url shortener, small url, domain, free, open source">
       <meta name="Description" content="The most fluent url shortener with nice domain to remember.">
-
 
       <title>Small - URL Shortener</title>
 
@@ -20,7 +19,11 @@
 
          <div class="form">
             <span>URL</span><br>
-            <input id="in" onkeyup="sendValue(event, this.value)" onpaste="socket.emit('checkUrl', this.value)" type="text" placeholder="Website to be shortened">
+            <div class="input">
+               <input id="in" onkeyup="sendValue(event, this.value)" type="text" placeholder="Website to be shortened">
+               <button type="button" name="button" onclick="sendValue(document.getElementById('in').value)">Shorten</button>
+            </div>
+
          </div>
 
          <p><%= connections %> user online | <%= shorts %> shorts online | <%= requests %> requests since restart</p>
@@ -34,6 +37,10 @@
          var socket = io(window.location.origin);
 
          function sendValue(event, value) {
+            if(!value) {
+               socket.emit('checkUrl', event)
+            }
+
             var x = event.which || event.keyCode;
             if(x == 13) {
                socket.emit('checkUrl', value)

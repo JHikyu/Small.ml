@@ -39,7 +39,14 @@
    top: 50%;
    transform: translate(-50%, -50%);
 }
+.main .form .input {
+   position: relative;
+   width: 550px;
+}
 .main .form input {
+   position: absolute;
+   left: 0;
+   top: 0;
    height: 60px;
    width: 550px;
    background-color: white;
@@ -56,6 +63,24 @@
    font-size: 18px;
    font-family: Roboto;
 }
+.main .form input:focus {outline:0;}
+.main .form button {
+   position: absolute;
+   right: -5px;
+   top: 0;
+
+   height: 62px;
+   width: 100px;
+   border: none;
+   background-color: #44555d;
+   border-radius: 0 5px 5px 0;
+   color: white;
+   font-size: 18px;
+   font-family: Roboto;
+   cursor: pointer;
+}
+.main .form button:focus {outline:0;}
+
 .main .form span {
    display: inline-block;
    padding: 10px;

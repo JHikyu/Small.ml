@@ -28,7 +28,7 @@ app.get('/', function(req, res) {
    var shorts = db.get('links')
       .size()
       .value()
-   res.render('index.ejs', { connections: connections+1, shorts: shorts, requests: requests });
+   res.render('index.ejs', { connections: connections, shorts: shorts, requests: requests });
 });
 app.get('/:id', function(req, res) {
    // req.params.id => hi
