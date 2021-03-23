@@ -42,7 +42,28 @@ app.get('/', function(req, res) {
 })
 
 app.get('/api/:version/:one', function(req, res) {
+   db.get("SELECT * FROM info", [], (err, row) => {
+      db.run("UPDATE info SET requests = '"+(row.requests+1)+"' WHERE requests = '"+row.requests+"'")
+      requests = (row.requests+1)
+   })
+
    if(req.params.version == 'v1') {
+
+      if(req.params.one == 'view') {
+         if(!req.query.short) {
+            res.send({ error: "short not specified" })
+         } else {
+            db.all("SELECT COUNT(short) AS sum, url AS url, expiry AS expiry FROM links WHERE short = '"+req.query.short+"'", [], (err, rows) => {
+               if(rows[0].sum == 0) {
+                  res.send({ error: "short not created >> yet!" })
+               }
+               else {
+                  res.send({ url: rows[0].url, short: req.query.short, expiry: rows[0].expiry })
+               }
+            })
+         }
+      }
+
       if(req.params.one == 'create') {
          if(!req.query.url) {
             res.send({ error: "url not specified" })
