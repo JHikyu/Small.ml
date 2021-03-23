@@ -90,7 +90,13 @@ app.get('/api/:version/:one', function(req, res) {
 })
 
 app.get('/:id', function(req, res) {
-   requests++
+
+   db.get("SELECT * FROM info", [], (err, row) => {
+      db.run("UPDATE info SET requests = '"+(row.requests+1)+"' WHERE requests = '"+row.requests+"'")
+      requests = (row.requests+1)
+   })
+
+
    db.all("SELECT COUNT(short) AS sum FROM links", [], (err, rows) => {
       io.emit('bottomInfoDock', {connections: connections, requests: requests, shorts: rows[0].sum})
    })
@@ -114,7 +120,12 @@ var connections = 0;
 var requests = 0;
 io.on('connection', function(socket) {
    connections++
-   requests++
+   db.get("SELECT * FROM info", [], (err, row) => {
+      db.run("UPDATE info SET requests = '"+(row.requests+1)+"' WHERE requests = '"+row.requests+"'")
+      requests = (row.requests+1)
+   })
+
+
    db.all("SELECT COUNT(short) AS sum FROM links", [], (err, rows) => {
       io.emit('bottomInfoDock', {connections: connections, requests: requests, shorts: rows[0].sum})
    })
@@ -135,7 +146,10 @@ io.on('connection', function(socket) {
 
 
    socket.on('checkUrl', (value) => {
-      requests++
+      db.get("SELECT * FROM info", [], (err, row) => {
+         db.run("UPDATE info SET requests = '"+(row.requests+1)+"' WHERE requests = '"+row.requests+"'")
+         requests = (row.requests+1)
+      })
 
       var regex = /^((ftp|http|https):\/\/)?(www\.)?([A-z]+)\.([A-z]{2,})/
 
