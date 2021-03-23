@@ -120,9 +120,16 @@ io.on('connection', function(socket) {
          var inDB
          var token = randomToken(3)
 
-         db.run("INSERT INTO links (short, url, expiry, key) VALUES('"+token+"', '"+value+"', "+date+", '"+randomToken(6)+"');")
 
-         socket.emit('successfullyCreated', token)
+         db.all("SELECT * FROM links WHERE url = '"+value+"'", [], (err, rows) => {
+            if(rows.length == 0) {
+               db.run("INSERT INTO links (short, url, expiry, key) VALUES('"+token+"', '"+value+"', "+date+", '"+randomToken(6)+"');")
+               socket.emit('successfullyCreated', token)
+            }
+            else {
+               socket.emit('successfullyCreated', rows[0].short)
+            }
+         })
 
       }
       else {
