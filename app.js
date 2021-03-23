@@ -28,10 +28,10 @@ app.use(express.static('public'));
 
 app.get('/', function(req, res) {
    db.all("SELECT COUNT(short) AS sum FROM links", [], (err, rows) => {
-      res.render('index.ejs', { connections: connections, shorts: rows[0].sum, requests: requests });
+      res.render('index.ejs', { connections: connections, shorts: rows[0].sum, requests: requests })
    })
+})
 
-});
 app.get('/api/:version/:one', function(req, res) {
    if(req.params.version == 'v1') {
       if(req.params.one == 'create') {
@@ -50,15 +50,15 @@ app.get('/api/:version/:one', function(req, res) {
                   return
                }
 
-               var token;
-               var date = moment().add(expiryDays, 'days').unix();
-               var inDB;
-               token = randomToken(3);
+               var token
+               var date = moment().add(expiryDays, 'days').unix()
+               var inDB
+               token = randomToken(3)
 
                db.all("SELECT * FROM links WHERE short = '"+token+"'", [], (err, rows) => {
                   if(rows.length == 0) {
-                     console.log(req.query.url);
-                     db.run("INSERT INTO links (short, url, expiry, key) VALUES('"+token+"', '"+req.query.url+"', "+date+", '"+randomToken(6)+"');");
+                     console.log(req.query.url)
+                     db.run("INSERT INTO links (short, url, expiry, key) VALUES('"+token+"', '"+req.query.url+"', "+date+", '"+randomToken(6)+"');")
                      res.send({ short: token, expiry: date, url: req.query.url, complete_shorten_url: "http://www.small.ml/" + token, shorten_url: "small.ml/" + token })
                   }
                   else {
@@ -79,28 +79,20 @@ app.get('/api/:version/:one', function(req, res) {
 })
 
 app.get('/:id', function(req, res) {
-   var date = moment().add(180, 'days').unix();
+   var date = moment().add(180, 'days').unix()
 
       db.all("SELECT * FROM links WHERE short = '"+req.params.id+"'", [], (err, rows) => {
          if(rows.length == 0) {
-            res.render('505.ejs');
+            res.render('505.ejs')
          }
          else {
-            db.run("UPDATE links SET expiry = '"+date+"' WHERE short = '"+req.params.id+"'");
+            db.run("UPDATE links SET expiry = '"+date+"' WHERE short = '"+req.params.id+"'")
             setTimeout(function() {
-               res.redirect(rows[0].url);
+               res.redirect(rows[0].url)
             }, 1)
          }
       })
-
-
-      // db.get('links')
-      //    .find({ short: req.params.id })
-      //    .set('expiry', date)
-      //    .write()
-
-});
-
+})
 
 var connections = 0;
 var requests = 0;
@@ -108,10 +100,10 @@ io.on('connection', function(socket) {
    connections++
    requests++
 
-   console.log('A user connected');
-   socket.on('restart', (data) => {
-      exit(1);
-   })
+   console.log('A user connected')
+   // socket.on('restart', (data) => {
+   //    exit(1)
+   // })
    socket.on('disconnect', function () {
       connections--
       console.log('A user disconnected');
@@ -125,17 +117,17 @@ io.on('connection', function(socket) {
 
       if(regex.test(value)) {
 
-         var date = moment().add(180, 'days').unix();
-         var inDB;
-         var token = randomToken(3);
+         var date = moment().add(180, 'days').unix()
+         var inDB
+         var token = randomToken(3)
 
-         db.run("INSERT INTO links (short, url, expiry, key) VALUES('"+token+"', '"+value+"', "+date+", '"+randomToken(6)+"');");
+         db.run("INSERT INTO links (short, url, expiry, key) VALUES('"+token+"', '"+value+"', "+date+", '"+randomToken(6)+"');")
 
          socket.emit('successfullyCreated', token)
 
       }
       else {
-         console.log('Not a URI1');
+         console.log('Not a URI')
       }
    })
 
@@ -143,12 +135,7 @@ io.on('connection', function(socket) {
 
 });
 
-
-
-
-
-
 setInterval(function(){
-   var date = moment().unix();
-   db.run("DELETE FROM links WHERE expiry - " + date + " <= 0");
-}, 2000)
+   var date = moment().unix()
+   db.run("DELETE FROM links WHERE expiry - " + date + " <= 0")
+}, 10000)
