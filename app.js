@@ -40,7 +40,7 @@ app.get('/api/:version/:one', function(req, res) {
          } else {
 
 
-            var regex = /^((ftp|http|https):\/\/)?www\.([A-z]+)\.([A-z]{2,})/
+            var regex = /^((ftp|http|https):\/\/)?(www)?\.([A-z]+)\.([A-z]{2,})/
 
             if(regex.test(req.query.url)) {
 
@@ -113,7 +113,7 @@ io.on('connection', function(socket) {
 
    socket.on('checkUrl', (value) => {
 
-      var regex = /^((ftp|http|https):\/\/)?www\.([A-z]+)\.([A-z]{2,})/
+      var regex = /^((ftp|http|https):\/\/)?(www)?\.([A-z]+)\.([A-z]{2,})/
 
       if(regex.test(value)) {
 
