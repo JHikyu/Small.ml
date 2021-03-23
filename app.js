@@ -1,11 +1,18 @@
 var express = require('express');
 var app = express();
-const http = require('http').Server(app);
-const https = require('http');
+var app2 = express();
+const fs = require('fs');
+const ssl_options = {
+   key: fs.readFileSync('privkey.pem'),
+   cert: fs.readFileSync('cert.pem')
+};
+const http = require('http').Server(app2);
+const https = require('https').Server(ssl_options, app)
 
 http.listen(process.env.PORT || 80, function() {
      console.log('listening on *:80');
 });
+
 
 
 var sqlite3 = require('sqlite3').verbose();
