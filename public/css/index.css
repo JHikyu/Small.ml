@@ -36,6 +36,16 @@
       cursor: pointer;
       box-shadow: 2px 2px 3px 0px rgb(0 0 0 / 30%);
    }
+   .main .form span {
+      display: inline-block;
+      padding: 10px;
+      width: 100%;
+
+      color: white;
+      font-family: Roboto;
+      font-weight: bold;
+      font-size: 12px;
+   }
 }
 @media (min-device-width: 701px) {
    .main .form input {
@@ -67,6 +77,15 @@
       font-size: 18px;
       font-family: Roboto;
       cursor: pointer;
+   }
+   .main .form span {
+      display: inline-block;
+      padding: 10px;
+
+      color: white;
+      font-family: Roboto;
+      font-weight: bold;
+      font-size: 12px;
    }
 }
 
@@ -125,16 +144,6 @@
 }
 .main .form input:focus {outline:0;}
 .main .form button:focus {outline:0;}
-
-.main .form span {
-   display: inline-block;
-   padding: 10px;
-
-   color: white;
-   font-family: Roboto;
-   font-weight: bold;
-   font-size: 12px;
-}
 .main .github {
    position: absolute;
    left: 30px;

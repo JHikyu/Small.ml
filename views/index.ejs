@@ -51,7 +51,21 @@
          }
 
          socket.on('successfullyCreated', token => {
-            document.getElementById('in').value = window.location.href + token;
+            document.getElementById('in').value = "Copied!"
+
+            var textArea = document.createElement("textarea")
+            textArea.value = window.location.href + token
+            document.body.appendChild(textArea)
+            textArea.select()
+            document.execCommand("Copy")
+            textArea.remove()
+
+            setTimeout(function(){
+               document.getElementById('in').value = window.location.href + token
+            }, 2000)
+
+
+
          })
 
          socket.on('bottomInfoDock', data => {
