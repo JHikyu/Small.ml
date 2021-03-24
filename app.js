@@ -60,7 +60,7 @@ app.get('/api/:version/:one', function(req, res) {
                   res.send({ error: "short not created >> yet!" })
                }
                else {
-                  res.send({ url: rows[0].url, short: req.query.short, expiry: rows[0].expiry })
+                  res.send({ url: rows[0].url, short: req.query.short, expiry: rows[0].expiry, views: rows[0].views })
                }
             })
          }
@@ -104,7 +104,7 @@ app.get('/api/:version/:one', function(req, res) {
                      if(rows[0].sum == 0) {
                         if(req.query.short) {
                            token = req.query.short
-                           db.run("INSERT INTO links (short, url, expiry, key, sub) VALUES('"+token+"', '"+req.query.url+"', "+date+", '"+randomToken(6)+"', '"+req.query.sub+"');")
+                           db.run("INSERT INTO links (short, url, expiry, key, sub, views) VALUES('"+token+"', '"+req.query.url+"', "+date+", '"+randomToken(6)+"', '"+req.query.sub+"', 0);")
                            res.send({ short: token, expiry: date, url: req.query.url, complete_shorten_url: "http://"+req.query.sub+".small.ml/" + token, shorten_url: req.query.sub + ".small.ml/" + token })
                            console.log("New API usage: [create] short: " + req.query.short, ', url: ' + req.query.url, ', sub: ' + req.query.sub);
                         }
@@ -122,7 +122,7 @@ app.get('/api/:version/:one', function(req, res) {
                   db.all("SELECT COUNT(short) AS sum FROM links WHERE short = '"+token+"'", [], (err, rows) => {
                      if(rows[0].sum == 0) {
                         console.log(req.query.url)
-                        db.run("INSERT INTO links (short, url, expiry, key) VALUES('"+token+"', '"+req.query.url+"', "+date+", '"+randomToken(6)+"');")
+                        db.run("INSERT INTO links (short, url, expiry, key, views) VALUES('"+token+"', '"+req.query.url+"', "+date+", '"+randomToken(6)+"', 0);")
                         res.send({ short: token, expiry: date, url: req.query.url, complete_shorten_url: "http://small.ml/" + token, shorten_url: "small.ml/" + token })
                         console.log("New API usage: [create] short: " + req.query.short, ', url: ' + req.query.url);
                      }
@@ -168,7 +168,7 @@ app.get('/:id', function(req, res) {
             res.render('505.ejs')
          }
          else {
-            db.run("UPDATE links SET expiry = '"+date+"' WHERE short = '"+req.params.id+"' AND sub = '"+subdomain+"'")
+            db.run("UPDATE links SET expiry = '"+date+"', views = '"+(rows[0].views+1)+"' WHERE short = '"+req.params.id+"' AND sub = '"+subdomain+"'")
             res.redirect(rows[0].url)
          }
       })
@@ -179,7 +179,7 @@ app.get('/:id', function(req, res) {
             res.render('505.ejs')
          }
          else {
-            db.run("UPDATE links SET expiry = '"+date+"' WHERE short = '"+req.params.id+"'")
+            db.run("UPDATE links SET expiry = '"+date+"', views = '"+(rows[0].views+1)+"' WHERE short = '"+req.params.id+"'")
             res.redirect(rows[0].url)
          }
       })
@@ -230,7 +230,7 @@ io.on('connection', function(socket) {
 
          db.all("SELECT * FROM links WHERE url = '"+value+"'", [], (err, rows) => {
             if(rows.length == 0) {
-               db.run("INSERT INTO links (short, url, expiry, key) VALUES('"+token+"', '"+value+"', "+date+", '"+randomToken(6)+"');")
+               db.run("INSERT INTO links (short, url, expiry, key, views) VALUES('"+token+"', '"+value+"', "+date+", '"+randomToken(6)+"', 0);")
                socket.emit('successfullyCreated', token)
             }
             else {
