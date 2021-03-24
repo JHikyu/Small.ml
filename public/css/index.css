@@ -1,8 +1,54 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap');
 
 
+@media (max-device-width: 600px) {
+   .main .form input {
+      position: absolute;
+      left: 50%;
+      transform: translate(-50%, 0);
+      top: 0;
+      height: 60px;
+      width: 80%;
+      padding: 0;
+      background-color: white;
+      border: none;
+      border-radius: 5px;
 
-@media (max-device-width: 700px) {
+      color: #37404B;
+      font-size: 18px;
+      font-family: Roboto;
+      box-shadow: 2px 2px 3px 0px rgb(0 0 0 / 30%);
+   }
+   .main .form button {
+      position: absolute;
+      left: 50%;
+      transform: translate(-50%, 0);
+      top: 65px;
+
+      height: 62px;
+      width: 80%;
+      border: none;
+      background-color: #44555d;
+      border-radius: 5px;
+      color: white;
+      font-size: 18px;
+      font-family: Roboto;
+      cursor: pointer;
+      box-shadow: 2px 2px 3px 0px rgb(0 0 0 / 30%);
+   }
+   .main .form p {
+      display: inline-block;
+      padding: 10px;
+      transform: translate(50%, 0);
+
+      color: white;
+      font-family: Roboto;
+      font-weight: bold;
+      font-size: 12px;
+   }
+}
+@media (min-device-width: 601px) and
+       (max-device-width: 700px) {
    .main .form input {
       position: absolute;
       left: 0;
@@ -36,7 +82,7 @@
       cursor: pointer;
       box-shadow: 2px 2px 3px 0px rgb(0 0 0 / 30%);
    }
-   .main p {
+   .main #infoDock {
       position: absolute;
       left: 50%;
       bottom: 30px;
@@ -47,7 +93,15 @@
       font-family: Roboto;
       color: white;
    }
+   .main .form p {
+      display: inline-block;
+      padding: 10px;
 
+      color: white;
+      font-family: Roboto;
+      font-weight: bold;
+      font-size: 12px;
+   }
 }
 @media (min-device-width: 701px) {
    .main .form input {
@@ -80,7 +134,7 @@
       font-family: Roboto;
       cursor: pointer;
    }
-   .main p {
+   .main #infoDock {
       position: absolute;
       left: 50%;
       bottom: 30px;
@@ -88,6 +142,15 @@
 
       font-family: Roboto;
       color: white;
+   }
+   .main .form p {
+      display: inline-block;
+      padding: 10px;
+
+      color: white;
+      font-family: Roboto;
+      font-weight: bold;
+      font-size: 12px;
    }
 }
 
@@ -147,15 +210,7 @@
 .main .form input:focus {outline:0;}
 .main .form button:focus {outline:0;}
 
-.main .form span {
-   display: inline-block;
-   padding: 10px;
 
-   color: white;
-   font-family: Roboto;
-   font-weight: bold;
-   font-size: 12px;
-}
 .main .github {
    position: absolute;
    left: 30px;
