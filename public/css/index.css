@@ -36,16 +36,17 @@
       cursor: pointer;
       box-shadow: 2px 2px 3px 0px rgb(0 0 0 / 30%);
    }
-   .main .form span {
-      display: inline-block;
-      padding: 10px;
+   .main p {
+      position: absolute;
+      left: 50%;
+      bottom: 30px;
       width: 100%;
+      transform: translate(-50%, 0);
 
-      color: white;
       font-family: Roboto;
-      font-weight: bold;
-      font-size: 12px;
+      color: white;
    }
+
 }
 @media (min-device-width: 701px) {
    .main .form input {
@@ -78,14 +79,14 @@
       font-family: Roboto;
       cursor: pointer;
    }
-   .main .form span {
-      display: inline-block;
-      padding: 10px;
+   .main p {
+      position: absolute;
+      left: 50%;
+      bottom: 30px;
+      transform: translate(-50%, 0);
 
-      color: white;
       font-family: Roboto;
-      font-weight: bold;
-      font-size: 12px;
+      color: white;
    }
 }
 
@@ -144,6 +145,16 @@
 }
 .main .form input:focus {outline:0;}
 .main .form button:focus {outline:0;}
+
+.main .form span {
+   display: inline-block;
+   padding: 10px;
+
+   color: white;
+   font-family: Roboto;
+   font-weight: bold;
+   font-size: 12px;
+}
 .main .github {
    position: absolute;
    left: 30px;
@@ -152,13 +163,4 @@
 
    color: #677dc4;
    cursor: pointer;
-}
-.main p {
-   position: absolute;
-   left: 50%;
-   bottom: 30px;
-   transform: translate(-50%, 0);
-
-   font-family: Roboto;
-   color: white;
 }
