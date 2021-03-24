@@ -83,7 +83,9 @@ app.get('/api/:version/:one', function(req, res) {
                }
 
                if(req.query.short) {
-                  if(req.query.short.length > 5)
+                  if(req.query.sub != 'small')
+                     var token = req.query.short
+                  else if(req.query.short.length > 5)
                      var token = req.query.short
                   else {
                      res.send({ error: "custom short must have at least a length of 6" })
@@ -103,7 +105,7 @@ app.get('/api/:version/:one', function(req, res) {
                         if(req.query.short) {
                            token = req.query.short
                            db.run("INSERT INTO links (short, url, expiry, key, sub) VALUES('"+token+"', '"+req.query.url+"', "+date+", '"+randomToken(6)+"', '"+req.query.sub+"');")
-                           res.send({ short: token, expiry: date, url: req.query.url, complete_shorten_url: "http://www."+req.query.sub+".small.ml/" + token, shorten_url: req.query.sub + ".small.ml/" + token })
+                           res.send({ short: token, expiry: date, url: req.query.url, complete_shorten_url: "http://"+req.query.sub+".small.ml/" + token, shorten_url: req.query.sub + ".small.ml/" + token })
                            console.log("New API usage: [create] short: " + req.query.short, ', url: ' + req.query.url, ', sub: ' + req.query.sub);
                         }
                         else {
@@ -121,7 +123,7 @@ app.get('/api/:version/:one', function(req, res) {
                      if(rows[0].sum == 0) {
                         console.log(req.query.url)
                         db.run("INSERT INTO links (short, url, expiry, key) VALUES('"+token+"', '"+req.query.url+"', "+date+", '"+randomToken(6)+"');")
-                        res.send({ short: token, expiry: date, url: req.query.url, complete_shorten_url: "http://www.small.ml/" + token, shorten_url: "small.ml/" + token })
+                        res.send({ short: token, expiry: date, url: req.query.url, complete_shorten_url: "http://small.ml/" + token, shorten_url: "small.ml/" + token })
                         console.log("New API usage: [create] short: " + req.query.short, ', url: ' + req.query.url);
                      }
                      else {
