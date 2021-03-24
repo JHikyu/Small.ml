@@ -114,7 +114,8 @@
       border: none;
       background-color: white;
       border-radius: 5px;
-      color: white;
+
+      color: #37404B;
       font-size: 18px;
       font-family: Roboto;
       cursor: pointer;
@@ -194,6 +195,7 @@
    position: absolute;
    left: 50%;
    top: 40%;
+   max-width: 80%;
    transform: translate(-50%, -50%);
 }
 .main .form .input {

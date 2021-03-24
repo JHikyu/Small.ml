@@ -25,9 +25,8 @@ var randomToken = require('random-token').create('abcdefghijklmnopqrstuvwxzyABCD
 const io = require('socket.io')(https);
 
 
+
 app.use(express.static('public'));
-
-
 
 app2.get('*', function(req, res){
    res.redirect("https://"+req.hostname+req.url)
@@ -35,6 +34,10 @@ app2.get('*', function(req, res){
 
 
 app.get('/', function(req, res) {
+   // Subdomain
+   console.log("Subdomain: " + req.get('host') ? req.get('host').substring(0, req.get('host').lastIndexOf('.')) : null);
+
+
    db.all("SELECT COUNT(short) AS sum FROM links", [], (err, rows) => {
       res.render('index.ejs', { connections: connections, shorts: rows[0].sum, requests: requests })
    })
@@ -122,25 +125,45 @@ app.get('/:id', function(req, res) {
       db.run("UPDATE info SET requests = '"+(row.requests+1)+"' WHERE requests = '"+row.requests+"'")
       requests = (row.requests+1)
    })
-
-
    db.all("SELECT COUNT(short) AS sum FROM links", [], (err, rows) => {
       io.emit('bottomInfoDock', {connections: connections, requests: requests, shorts: rows[0].sum})
    })
 
+
+
    var date = moment().add(180, 'days').unix()
 
+   // Subdomain
+   subdomain = ("Subdomain: " + req.get('host') ? req.get('host').substring(0, req.get('host').lastIndexOf('.')) : null)
+   if(subdomain) {
+      subdomain = subdomain.split('.')[0]
+      console.log(1);
+      db.all("SELECT * FROM links WHERE short = '"+req.params.id+"' AND sub = '"+subdomain+"'", [], (err, rows) => {
+         if(rows.length == 0) {
+            console.log(rows);
+            console.log(subdomain, req.params.id);
+            res.render('505.ejs')
+         }
+         else {
+            db.run("UPDATE links SET expiry = '"+date+"' WHERE short = '"+req.params.id+"' AND sub = '"+subdomain+"'")
+            res.redirect(rows[0].url)
+         }
+      })
+   }
+   else {
       db.all("SELECT * FROM links WHERE short = '"+req.params.id+"'", [], (err, rows) => {
          if(rows.length == 0) {
             res.render('505.ejs')
          }
          else {
             db.run("UPDATE links SET expiry = '"+date+"' WHERE short = '"+req.params.id+"'")
-            setTimeout(function() {
-               res.redirect(rows[0].url)
-            }, 1)
+            res.redirect(rows[0].url)
          }
       })
+   }
+
+
+
 })
 
 var connections = 0;
