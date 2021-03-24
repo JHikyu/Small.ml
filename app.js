@@ -96,17 +96,40 @@ app.get('/api/:version/:one', function(req, res) {
                var date = moment().add(expiryDays, 'days').unix()
                var inDB
 
-               db.all("SELECT COUNT(short) AS sum FROM links WHERE short = '"+token+"'", [], (err, rows) => {
-                  if(rows[0].sum == 0) {
-                     console.log(req.query.url)
-                     db.run("INSERT INTO links (short, url, expiry, key) VALUES('"+token+"', '"+req.query.url+"', "+date+", '"+randomToken(6)+"');")
-                     res.send({ short: token, expiry: date, url: req.query.url, complete_shorten_url: "http://www.small.ml/" + token, shorten_url: "small.ml/" + token })
-                     console.log("New API usage: [create] short: " + req.query.short, ', url: ' + req.query.url);
-                  }
-                  else {
-                     res.send({ error: "short already used" })
-                  }
-               })
+
+               if(req.query.sub) {
+                  db.all("SELECT COUNT(short) AS sum FROM links WHERE short = '"+token+"' AND sub = '"+req.query.sub+"'", [], (err, rows) => {
+                     if(rows[0].sum == 0) {
+                        if(req.query.short) {
+                           token = req.query.short
+                           db.run("INSERT INTO links (short, url, expiry, key, sub) VALUES('"+token+"', '"+req.query.url+"', "+date+", '"+randomToken(6)+"', '"+req.query.sub+"');")
+                           res.send({ short: token, expiry: date, url: req.query.url, complete_shorten_url: "http://www."+req.query.sub+".small.ml/" + token, shorten_url: req.query.sub + ".small.ml/" + token })
+                           console.log("New API usage: [create] short: " + req.query.short, ', url: ' + req.query.url, ', sub: ' + req.query.sub);
+                        }
+                        else {
+                           res.send({ error: "no short specified" })
+                        }
+
+                     }
+                     else {
+                        res.send({ error: "short already used" })
+                     }
+                  })
+               }
+               else {
+                  db.all("SELECT COUNT(short) AS sum FROM links WHERE short = '"+token+"'", [], (err, rows) => {
+                     if(rows[0].sum == 0) {
+                        console.log(req.query.url)
+                        db.run("INSERT INTO links (short, url, expiry, key) VALUES('"+token+"', '"+req.query.url+"', "+date+", '"+randomToken(6)+"');")
+                        res.send({ short: token, expiry: date, url: req.query.url, complete_shorten_url: "http://www.small.ml/" + token, shorten_url: "small.ml/" + token })
+                        console.log("New API usage: [create] short: " + req.query.short, ', url: ' + req.query.url);
+                     }
+                     else {
+                        res.send({ error: "short already used" })
+                     }
+                  })
+               }
+
 
             }
             else {
@@ -135,13 +158,11 @@ app.get('/:id', function(req, res) {
 
    // Subdomain
    subdomain = ("Subdomain: " + req.get('host') ? req.get('host').substring(0, req.get('host').lastIndexOf('.')) : null)
+   subdomain = subdomain.replace('small', '')
    if(subdomain) {
       subdomain = subdomain.split('.')[0]
-      console.log(1);
       db.all("SELECT * FROM links WHERE short = '"+req.params.id+"' AND sub = '"+subdomain+"'", [], (err, rows) => {
          if(rows.length == 0) {
-            console.log(rows);
-            console.log(subdomain, req.params.id);
             res.render('505.ejs')
          }
          else {
