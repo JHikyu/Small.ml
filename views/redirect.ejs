@@ -28,11 +28,14 @@
          var socket = io(window.location.origin);
 
          var time = 3;
-         setInterval(function(){
+         var intval = setInterval(function(){
             document.getElementById('timer').innerHTML = --time
 
-            if(time <= 0) {
+            if(time == 0) {
                window.location.replace("<%= redirect %>");
+            }
+            else if(time <= -5) {
+               window.close();
             }
          }, 1000)
 
