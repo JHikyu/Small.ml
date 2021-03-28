@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+   <head>
+      <meta charset="utf-8">
+      <meta name="Language" content="en">
+      <meta name="Keywords" content="url shortener, small url, domain, free, open source">
+      <meta name="Description" content="The most fluent url shortener with nice domain to remember.">
+      <meta name="google-site-verification" content="fMALORIF2nmxW2o8EWfJY4PnysyRBSmZ8TB8UrUv6ag" />
+      <script data-ad-client="ca-pub-8892389785556673" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+      <link rel="icon" type="image/png" href="img/logo.png">
+
+      <title>Small - URL Shortener</title>
+
+      <link rel="stylesheet" href="css/index.css">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+   </head>
+   <body>
+
+      <p>Redirecting to</p>
+      <p><%= redirect %></p>
+      <p id="timer">3</p>
+
+   </body>
+   <footer>
+      <script src="js/socketio.js" charset="utf-8"></script>
+      <script type="text/javascript">
+         var socket = io(window.location.origin);
+
+         var time = 3;
+         setInterval(function(){
+            document.getElementById('timer').innerHTML = --time
+
+            if(time <= 0) {
+               window.location.replace("<%= redirect %>");
+            }
+         }, 1000)
+
+
+         // TODO: Cookies to check "instant redirect"
+      </script>
+   </footer>
+</html>

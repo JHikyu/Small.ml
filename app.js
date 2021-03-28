@@ -33,17 +33,45 @@ app2.get('*', function(req, res){
 })
 
 
+
+
+const axios = require('axios')
+const request = require('request')
+
+
+
 app.get('/', function(req, res) {
    // Subdomain
    console.log("Subdomain: " + req.get('host') ? req.get('host').substring(0, req.get('host').lastIndexOf('.')) : null);
 
-
-   db.all("SELECT COUNT(short) AS sum FROM links", [], (err, rows) => {
-      res.render('index.ejs', { connections: connections, shorts: rows[0].sum, requests: requests })
+   db.get("SELECT * FROM info", [], (err, row) => {
+      db.run("UPDATE info SET requests = '"+(row.requests+1)+"' WHERE requests = '"+row.requests+"'")
+      requests = (row.requests+1)
    })
+
+   db.all("SELECT COUNT(short) AS sum, views AS views, sub AS sub FROM links", [], (err, count) => {
+      db.all("SELECT views AS views, sub AS sub FROM links WHERE sub IS NOT NULL", [], (err, rows) => {
+         console.log(rows);
+         allViews = {}
+         rows.forEach((item, i) => {
+            if(!allViews[item.sub]) allViews[item.sub] = 0
+            allViews[item.sub] += item.views
+         });
+         console.log(allViews);
+
+
+         res.render('index.ejs', { connections: connections, shorts: count[0].sum, requests: requests, partners: allViews })
+      })
+   })
+
 })
 
 app.get('/api/:version/:one', function(req, res) {
+   res.setHeader('Access-Control-Allow-Origin', '*');
+   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+   res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+   res.setHeader('Access-Control-Allow-Credentials', true);
+
    db.get("SELECT * FROM info", [], (err, row) => {
       db.run("UPDATE info SET requests = '"+(row.requests+1)+"' WHERE requests = '"+row.requests+"'")
       requests = (row.requests+1)
@@ -72,7 +100,7 @@ app.get('/api/:version/:one', function(req, res) {
          } else {
             req.query.url = req.query.url.replace('small.ml', '')
 
-            var regex = /^((ftp|http|https):\/\/)?(www\.)?([A-z]+)\.([A-z]{2,})/
+            var regex = /^((ftp|http|https):\/\/)?(www\.)?([A-z-]+)\.([A-z]{2,})/
 
             if(regex.test(req.query.url)) {
 
@@ -105,7 +133,7 @@ app.get('/api/:version/:one', function(req, res) {
                         if(req.query.short) {
                            token = req.query.short
                            db.run("INSERT INTO links (short, url, expiry, key, sub, views) VALUES('"+token+"', '"+req.query.url+"', "+date+", '"+randomToken(6)+"', '"+req.query.sub+"', 0);")
-                           res.send({ short: token, expiry: date, url: req.query.url, complete_shorten_url: "http://"+req.query.sub+".small.ml/" + token, shorten_url: req.query.sub + ".small.ml/" + token })
+                           res.send({ short: token, expiry: date, url: req.query.url, complete_shorten_url: "https://"+req.query.sub+".small.ml/" + token, shorten_url: req.query.sub + ".small.ml/" + token })
                            console.log("New API usage: [create] short: " + req.query.short, ', url: ' + req.query.url, ', sub: ' + req.query.sub);
                         }
                         else {
@@ -119,15 +147,21 @@ app.get('/api/:version/:one', function(req, res) {
                   })
                }
                else {
-                  db.all("SELECT COUNT(short) AS sum FROM links WHERE short = '"+token+"'", [], (err, rows) => {
+                  db.all("SELECT COUNT(short) AS sum, short AS short FROM links WHERE url = '"+req.query.url+"'", [], (err, rows) => {
                      if(rows[0].sum == 0) {
-                        console.log(req.query.url)
-                        db.run("INSERT INTO links (short, url, expiry, key, views) VALUES('"+token+"', '"+req.query.url+"', "+date+", '"+randomToken(6)+"', 0);")
-                        res.send({ short: token, expiry: date, url: req.query.url, complete_shorten_url: "http://small.ml/" + token, shorten_url: "small.ml/" + token })
-                        console.log("New API usage: [create] short: " + req.query.short, ', url: ' + req.query.url);
+                        db.all("SELECT COUNT(short) AS sum FROM links WHERE short = '"+token+"'", [], (errr, rowss) => {
+                           if(rowss[0].sum != 0) {
+                              token = randomToken(4)
+                           }
+
+                           db.run("INSERT INTO links (short, url, expiry, key, views) VALUES('"+token+"', '"+req.query.url+"', "+date+", '"+randomToken(6)+"', 0);")
+                           res.send({ short: token, expiry: date, url: req.query.url, complete_shorten_url: "https://small.ml/" + token, shorten_url: "small.ml/" + token })
+                        })
+
                      }
                      else {
-                        res.send({ error: "short already used" })
+                        console.log(rows);
+                        res.send({ short: rows[0].short, expiry: date, url: req.query.url, complete_shorten_url: "https://small.ml/" + rows[0].short, shorten_url: "small.ml/" + rows[0].short })
                      }
                   })
                }
@@ -138,6 +172,16 @@ app.get('/api/:version/:one', function(req, res) {
                res.send({ error: "invalid url" })
             }
          }
+      }
+
+      if(req.params.one == 'text') {
+         token = randomToken(6)
+
+         date = moment().add(1, 'hour').unix()
+
+         db.run("INSERT INTO texts (short, text, expiry, key, views) VALUES('"+token+"', '"+req.query.text+"', "+date+", '"+randomToken(6)+"', 0);")
+         res.send({ short: token, expiry: date, text: req.query.text, complete_shorten_url: "https://small.ml/" + token, shorten_url: "small.ml/" + token })
+         console.log({ short: token, expiry: date, text: req.query.text, complete_shorten_url: "https://small.ml/" + token, shorten_url: "small.ml/" + token });
       }
 
    }
@@ -169,18 +213,31 @@ app.get('/:id', function(req, res) {
          }
          else {
             db.run("UPDATE links SET expiry = '"+date+"', views = '"+(rows[0].views+1)+"' WHERE short = '"+req.params.id+"' AND sub = '"+subdomain+"'")
+
             res.redirect(rows[0].url)
+
+            //res.render('redirect.ejs', { type: 'suburl', redirect: rows[0].url })
          }
       })
    }
    else {
       db.all("SELECT * FROM links WHERE short = '"+req.params.id+"'", [], (err, rows) => {
          if(rows.length == 0) {
-            res.render('505.ejs')
+
+            // try if its text
+            db.all("SELECT * FROM texts WHERE short = '"+req.params.id+"'", [], (err, rows) => {
+               if(rows.length == 0) {
+                  res.render('505.ejs')
+               }
+               else {
+                  res.send(rows[0].text)
+               }
+            })
+
          }
          else {
             db.run("UPDATE links SET expiry = '"+date+"', views = '"+(rows[0].views+1)+"' WHERE short = '"+req.params.id+"'")
-            res.redirect(rows[0].url)
+            res.render('redirect.ejs', { type: 'url', redirect: rows[0].url })
          }
       })
    }
@@ -219,7 +276,7 @@ io.on('connection', function(socket) {
          requests = (row.requests+1)
       })
 
-      var regex = /^((ftp|http|https):\/\/)?(www\.)?([A-z]+)\.([A-z]{2,})/
+      var regex = /^((ftp|http|https):\/\/)?(www\.)?([A-z-]+)\.([A-z]{2,})/
 
       if(regex.test(value)) {
 
@@ -253,6 +310,13 @@ io.on('connection', function(socket) {
 });
 
 setInterval(function(){
-   var date = moment().unix()
-   db.run("DELETE FROM links WHERE expiry - " + date + " <= 0")
-}, 10000)
+   var date = moment().add(1, 'second').unix()
+
+   db.get("SELECT * FROM texts ORDER BY expiry asc", [], (err, row) => {
+      if(row) {
+         db.run("DELETE FROM texts WHERE expiry - " + date + " <= 0")
+      }
+   })
+
+   // db.run("DELETE FROM links WHERE expiry - " + date + " <= 0")
+}, 1000)
