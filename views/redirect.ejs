@@ -21,21 +21,33 @@
       <p><%= redirect %></p>
       <p id="timer">3</p>
 
+      <button id="fastm" onclick="changeFastMode()" type="button" name="button">Fast Mode</button>
+
    </body>
    <footer>
+      <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
       <script src="js/socketio.js" charset="utf-8"></script>
       <script type="text/javascript">
          var socket = io(window.location.origin);
 
-         var time = 3;
+
+         function changeFastMode() {
+            Cookies.set('redirect_fastMode', true)
+         }
+
+         if(Cookies.get('redirect_fastMode')) {
+            window.location.replace("<%= redirect %>");
+         }
+         else {
+            var time = 3
+         }
+
          var intval = setInterval(function(){
             document.getElementById('timer').innerHTML = --time
 
-            if(time == 0) {
+            if(time <= 0) {
                window.location.replace("<%= redirect %>");
-            }
-            else if(time <= -5) {
-               window.close();
+               clearInterval(intval)
             }
          }, 1000)
 
