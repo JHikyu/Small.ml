@@ -29,8 +29,6 @@ app2.get('*', function (req, res) {
 })
 
 app.get('/', function (req, res) {
-  // Subdomain
-  console.log("Subdomain: " + req.get('host') ? req.get('host').substring(0, req.get('host').lastIndexOf('.')) : null);
 
   db.get("SELECT * FROM info", [], (err, row) => {
     db.run("UPDATE info SET requests = '" + (row.requests + 1) + "' WHERE requests = '" + row.requests + "'")
@@ -39,14 +37,11 @@ app.get('/', function (req, res) {
 
   db.all("SELECT COUNT(short) AS sum, views AS views, sub AS sub FROM links", [], (err, count) => {
     db.all("SELECT views AS views, sub AS sub FROM links WHERE sub IS NOT NULL", [], (err, rows) => {
-      console.log(rows);
       allViews = {}
       rows.forEach((item, i) => {
         if (!allViews[item.sub]) allViews[item.sub] = 0
         allViews[item.sub] += item.views
       });
-      console.log(allViews);
-
 
       res.render('index.ejs', { connections: connections, shorts: count[0].sum, requests: requests, partners: allViews })
     })
@@ -112,8 +107,6 @@ app.get('/api/:version/:one', function (req, res) {
             var token = randomToken(3)
           }
           var date = moment().add(expiryDays, 'days').unix()
-          var inDB
-
 
           if (req.query.sub) {
             db.all("SELECT COUNT(short) AS sum FROM links WHERE short = '" + token + "' AND sub = '" + req.query.sub + "'", [], (err, rows) => {
@@ -148,7 +141,6 @@ app.get('/api/:version/:one', function (req, res) {
 
               }
               else {
-                console.log(rows);
                 res.send({ short: rows[0].short, expiry: date, url: req.query.url, complete_shorten_url: "https://compact.ml/" + rows[0].short, shorten_url: "compact.ml/" + rows[0].short })
               }
             })
@@ -169,7 +161,6 @@ app.get('/api/:version/:one', function (req, res) {
 
       db.run("INSERT INTO texts (short, text, expiry, key, views) VALUES('" + token + "', '" + req.query.text + "', " + date + ", '" + randomToken(6) + "', 0);")
       res.send({ short: token, expiry: date, text: req.query.text, complete_shorten_url: "https://compact.ml/" + token, shorten_url: "compact.ml/" + token })
-      console.log({ short: token, expiry: date, text: req.query.text, complete_shorten_url: "https://compact.ml/" + token, shorten_url: "compact.ml/" + token });
     }
 
   }
@@ -241,9 +232,6 @@ io.on('connection', function (socket) {
 
 
   console.log('A user connected')
-  // socket.on('restart', (data) => {
-  //    exit(1)
-  // })
   socket.on('disconnect', function () {
     connections--
     db.all("SELECT COUNT(short) AS sum FROM links", [], (err, rows) => {
@@ -260,8 +248,6 @@ io.on('connection', function (socket) {
       requests = (row.requests + 1)
     })
 
-
-    console.log(value);
     var regex = /^((ftp|http|https):\/\/)?(www\.)?([A-z-0-9]+)\.([A-z]{2,})/
 
     if (regex.test(value)) {
