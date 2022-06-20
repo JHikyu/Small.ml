@@ -1,107 +1,93 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-   <head>
-      <meta charset="utf-8">
-      <meta name="Language" content="en">
-      <meta name="Keywords" content="url shortener, small url, domain, free, open source">
-      <meta name="Description" content="The most fluent url shortener with nice domain to remember.">
-      <meta name="google-site-verification" content="fMALORIF2nmxW2o8EWfJY4PnysyRBSmZ8TB8UrUv6ag" />
-      <script data-ad-client="ca-pub-8892389785556673" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 
-      <link rel="icon" type="image/png" href="img/logo.png">
+<head>
+  <meta charset="utf-8">
+  <meta name="Language" content="en">
+  <meta name="Keywords" content="url shortener, small url, domain, free, open source">
+  <meta name="Description" content="The most fluent url shortener with nice domain to remember.">
+  <meta name="google-site-verification" content="fMALORIF2nmxW2o8EWfJY4PnysyRBSmZ8TB8UrUv6ag" />
+  <script data-ad-client="ca-pub-8892389785556673" async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 
-      <title>Small - URL Shortener</title>
+  <link rel="icon" type="image/png" href="img/logo.png">
 
-      <link rel="stylesheet" href="css/index.css">
-      <script src="https://kit.fontawesome.com/c8e4359d1c.js" crossorigin="anonymous"></script>
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-   </head>
-   <body>
-      <div class="main">
-         <div class="nav">
-            <span>Small.ml</span>
-         </div>
+  <title>Small - URL Shortener</title>
 
-         <div class="form">
-            <p>URL</p>
-            <div class="input">
-               <input id="in" onkeyup="sendValue(event, this.value)" type="text" placeholder="Website to be shortened">
-               <button type="button" name="button" onclick="sendValue(document.getElementById('in').value)">Shorten</button>
-            </div>
+  <link rel="stylesheet" href="css/index.css">
+  <script src="https://kit.fontawesome.com/c8e4359d1c.js" crossorigin="anonymous"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
 
-         </div>
+<body>
+  <div class="main">
+    <div class="nav">
+      <span>Small.ml</span>
+    </div>
 
-
-         <div class="content">
-            <div class="partners">
-               <div class="partner">
-                  <p class="title">xdanlite</p>
-                  <div onclick="window.open('https://dan.small.ml/twitch', '_blank')" class="img" style="background-image: url('https://static-cdn.jtvnw.net/jtv_user_pictures/d14f5ec8-25e7-469c-b083-a1fca83000cf-profile_image-300x300.png')"></div>
-                  <p class="mainMedia">Twitch - 225 Follower</p>
-                  <p class="clicks"><%= partners.dan %> clicks</p>
-               </div>
-               <div class="partner">
-                  <p class="title">Neico004</p>
-                  <div onclick="window.open('https://neico.small.ml/twitch', '_blank')" class="img" style="background-image: url('https://static-cdn.jtvnw.net/jtv_user_pictures/cef73749-7689-4ffb-a7e9-95ee0690e912-profile_image-300x300.png')"></div>
-                  <p class="mainMedia">Twitch - 52 Follower</p>
-                  <p class="clicks"><%= partners.neico %> clicks</p>
-               </div>
-            </div>
-         </div>
-
-
-
-         <p id="infoDock"><%= connections %> user online | <%= shorts %> shorts online | <%= requests %> requests</p>
-         <i class="fab fa-github github"  onclick="window.open('https://github.com/JHikyu/Small.ml', '_blank')"></i>
+    <div class="form">
+      <p>URL</p>
+      <div class="input">
+        <input id="in" onkeyup="sendValue(event, this.value)" type="text" placeholder="Website to be shortened">
+        <button type="button" name="button" onclick="sendValue(document.getElementById('in').value)">Shorten</button>
       </div>
 
-   </body>
-   <footer>
-      <script src="js/socketio.js" charset="utf-8"></script>
-      <script type="text/javascript">
-         var socket = io(window.location.origin);
+    </div>
+
+    <p id="infoDock">
+      <%= connections %> user online | <%= shorts %> shorts online | <%= requests %> requests
+    </p>
+    <i class="fab fa-github github" onclick="window.open('https://github.com/JHikyu/Small.ml', '_blank')"></i>
+  </div>
+
+</body>
+<footer>
+  <script src="js/socketio.js" charset="utf-8"></script>
+  <script type="text/javascript">
+    var socket = io(window.location.origin);
 
         <% Object.keys(partners).forEach((item, i) => { %>
-           console.log("<%= item + ': ' + partners[item] %>");
+      console.log("<%= item + ': ' + partners[item] %>");
         <% }); %>
 
 
 
-         function sendValue(event, value) {
-            if(!value) {
-               event = event.replace('small.ml', '')
-               socket.emit('checkUrl', event)
-            }
+      function sendValue(event, value) {
+        if (!value) {
+          event = event.replace('small.ml', '')
+          socket.emit('checkUrl', event)
+        }
 
-            var x = event.which || event.keyCode;
-            if(x == 13) {
-               value = value.replace('small.ml', '')
-               socket.emit('checkUrl', value)
-            }
-         }
+        var x = event.which || event.keyCode;
+        if (x == 13) {
+          value = value.replace('small.ml', '')
+          socket.emit('checkUrl', value)
+        }
+      }
 
-         socket.on('successfullyCreated', token => {
-            document.getElementById('in').value = "Copied!"
+    socket.on('successfullyCreated', token => {
+      document.getElementById('in').value = "Copied!"
 
-            var textArea = document.createElement("textarea")
-            textArea.value = window.location.href + token
-            document.body.appendChild(textArea)
-            textArea.select()
-            document.execCommand("Copy")
-            textArea.remove()
+      var textArea = document.createElement("textarea")
+      textArea.value = window.location.href + token
+      document.body.appendChild(textArea)
+      textArea.select()
+      document.execCommand("Copy")
+      textArea.remove()
 
-            setTimeout(function(){
-               document.getElementById('in').value = window.location.href + token
-            }, 2000)
+      setTimeout(function () {
+        document.getElementById('in').value = window.location.href + token
+      }, 2000)
 
 
 
-         })
+    })
 
-         socket.on('bottomInfoDock', data => {
-            document.getElementById('infoDock').innerHTML = data.connections+' user online | '+data.shorts+' shorts online | '+data.requests+' requests'
-         })
+    socket.on('bottomInfoDock', data => {
+      document.getElementById('infoDock').innerHTML = data.connections + ' user online | ' + data.shorts + ' shorts online | ' + data.requests + ' requests'
+    })
 
-      </script>
-   </footer>
+  </script>
+</footer>
+
 </html>

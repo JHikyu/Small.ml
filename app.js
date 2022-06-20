@@ -213,7 +213,7 @@ app.get('/:id', function (req, res) {
         // try if its text
         db.all("SELECT * FROM texts WHERE short = '" + req.params.id + "'", [], (err, rows) => {
           if (rows.length == 0) {
-            res.render('505.ejs')
+            res.render('index.ejs')
           }
           else {
             res.send(rows[0].text)
