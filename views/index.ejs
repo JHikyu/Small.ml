@@ -35,7 +35,6 @@
     </div>
 
     <p id="infoDock">
-      <%= connections %> user online | <%= shorts %> shorts online | <%= requests %> requests
     </p>
     <i class="fab fa-github github" onclick="window.open('https://github.com/JHikyu/Small.ml', '_blank')"></i>
   </div>
@@ -46,24 +45,18 @@
   <script type="text/javascript">
     var socket = io(window.location.origin);
 
-        <% Object.keys(partners).forEach((item, i) => { %>
-      console.log("<%= item + ': ' + partners[item] %>");
-        <% }); %>
-
-
-
-      function sendValue(event, value) {
-        if (!value) {
-          event = event.replace('compact.ml', '')
-          socket.emit('checkUrl', event)
-        }
-
-        var x = event.which || event.keyCode;
-        if (x == 13) {
-          value = value.replace('compact.ml', '')
-          socket.emit('checkUrl', value)
-        }
+    function sendValue(event, value) {
+      if (!value) {
+        event = event.replace('compact.ml', '')
+        socket.emit('checkUrl', event)
       }
+
+      var x = event.which || event.keyCode;
+      if (x == 13) {
+        value = value.replace('compact.ml', '')
+        socket.emit('checkUrl', value)
+      }
+    }
 
     socket.on('successfullyCreated', token => {
       document.getElementById('in').value = "Copied!"
@@ -77,9 +70,7 @@
 
       setTimeout(function () {
         document.getElementById('in').value = window.location.href + token
-      }, 2000)
-
-
+      }, 1000)
 
     })
 
