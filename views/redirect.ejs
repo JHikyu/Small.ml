@@ -1,58 +1,33 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-   <head>
-      <meta charset="utf-8">
-      <meta name="Language" content="en">
-      <meta name="Keywords" content="url shortener, small url, domain, free, open source">
-      <meta name="Description" content="The most fluent url shortener with nice domain to remember.">
-      <meta name="google-site-verification" content="fMALORIF2nmxW2o8EWfJY4PnysyRBSmZ8TB8UrUv6ag" />
-      <script data-ad-client="ca-pub-8892389785556673" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 
-      <link rel="icon" type="image/png" href="img/logo.png">
+<head>
+  <meta charset="utf-8">
+  <meta name="Language" content="en">
+  <meta name="Keywords" content="url shortener, small url, domain, free, open source">
+  <meta name="Description" content="The most fluent url shortener with nice domain to remember.">
+  <meta name="google-site-verification" content="fMALORIF2nmxW2o8EWfJY4PnysyRBSmZ8TB8UrUv6ag" />
+  <script data-ad-client="ca-pub-8892389785556673" async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 
-      <title>Small - URL Shortener</title>
+  <link rel="icon" type="image/png" href="img/logo.png">
 
-      <link rel="stylesheet" href="css/index.css">
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-   </head>
-   <body>
+  <title>Compact - URL Shortener</title>
 
-      <p>Redirecting to</p>
-      <p><%= redirect %></p>
-      <p id="timer">3</p>
+  <link rel="stylesheet" href="css/index.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
 
-      <button id="fastm" onclick="changeFastMode()" type="button" name="button">Fast Mode</button>
+<body>
+</body>
+<footer>
+  <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
+  <script src="js/socketio.js" charset="utf-8"></script>
+  <script type="text/javascript">
+    var socket = io(window.location.origin);
 
-   </body>
-   <footer>
-      <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
-      <script src="js/socketio.js" charset="utf-8"></script>
-      <script type="text/javascript">
-         var socket = io(window.location.origin);
+    window.location.replace("<%= redirect %>");
+  </script>
+</footer>
 
-
-         function changeFastMode() {
-            Cookies.set('redirect_fastMode', true)
-         }
-
-         if(Cookies.get('redirect_fastMode')) {
-            window.location.replace("<%= redirect %>");
-         }
-         else {
-            var time = 3
-         }
-
-         var intval = setInterval(function(){
-            document.getElementById('timer').innerHTML = --time
-
-            if(time <= 0) {
-               window.location.replace("<%= redirect %>");
-               clearInterval(intval)
-            }
-         }, 1000)
-
-
-         // TODO: Cookies to check "instant redirect"
-      </script>
-   </footer>
 </html>
