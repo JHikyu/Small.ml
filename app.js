@@ -1,6 +1,6 @@
-var express = require('express');
-var app = express();
-var app2 = express();
+const express = require('express');
+const app = express();
+const app2 = express();
 const fs = require('fs');
 const ssl_options = {
   key: fs.readFileSync('privkey.pem'),
@@ -11,26 +11,26 @@ const https = require('https').Server(ssl_options, app)
 
 app.use(express.static('public'));
 
-http.listen(process.env.PORT || 80, function () {
+http.listen(process.env.PORT || 80, () => {
   console.log('listening on *:80');
 });
-https.listen(process.env.PORT || 443, function () {
+https.listen(process.env.PORT || 443, () => {
   console.log('ssl listening on *:443');
 });
 
-var sqlite3 = require('sqlite3').verbose();
-var db = new sqlite3.Database('data/data.db');
-var moment = require('moment');
-var randomToken = require('random-token').create('abcdefghijklmnopqrstuvwxzyABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789');
+const sqlite3 = require('sqlite3').verbose();
+const db = new sqlite3.Database('data/data.db');
+const moment = require('moment');
+const randomToken = require('random-token').create('abcdefghijklmnopqrstuvwxzyABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789');
 const io = require('socket.io')(https);
 
 const utils = require('./utils');
 
-app2.get('*', function (req, res) {
+app2.get('*', (req, res) => {
   res.redirect("https://" + req.hostname + req.url)
 })
 
-app.get('/', function (req, res) {
+app.get('/', (req, res) => {
 
   db.get("SELECT * FROM info", [], (err, row) => {
     db.run("UPDATE info SET requests = '" + (row.requests + 1) + "' WHERE requests = '" + row.requests + "'")
@@ -51,7 +51,7 @@ app.get('/', function (req, res) {
 
 })
 
-app.get('/api/:version/:one', function (req, res) {
+app.get('/api/:version/:one', (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
   res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
@@ -169,7 +169,7 @@ app.get('/api/:version/:one', function (req, res) {
 
 })
 
-app.get('/:id', function (req, res) {
+app.get('/:id', (req, res) => {
 
   db.get("SELECT * FROM info", [], (err, row) => {
     db.run("UPDATE info SET requests = '" + (row.requests + 1) + "' WHERE requests = '" + row.requests + "'")
@@ -224,12 +224,12 @@ app.get('/:id', function (req, res) {
 })
 
 io.on('connection', (socket) => {
-
-  db.all("SELECT COUNT(short) AS sum FROM links", [], (err, rows) => {
-    io.emit('bottomInfoDock', { connections: io.engine.clientsCount, requests: requests, shorts: rows[0].sum })
-  })
-
   utils.log('socket', 'connected', `(${io.engine.clientsCount})`);
+  utils.mixpanel('connection', {
+    id: socket.id,
+    ip: socket.request.connection.remoteAddress,
+    clients: io.engine.clientsCount
+  });
 
   socket.on('disconnect', () => {
     utils.log('socket', 'disconnected', `(${io.engine.clientsCount})`);
@@ -255,10 +255,6 @@ io.on('connection', (socket) => {
         else {
           socket.emit('successfullyCreated', rows[0].short);
         }
-
-        db.all("SELECT COUNT(short) AS sum FROM links", [], (err, rows) => {
-          io.emit('bottomInfoDock', { connections: connections, requests: requests, shorts: rows[0].sum });
-        })
       })
 
     }

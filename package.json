@@ -24,6 +24,7 @@
     "express": "^4.17.1",
     "https": "^1.0.0",
     "lowdb": "^1.0.0",
+    "mixpanel": "^0.16.0",
     "moment": "^2.29.1",
     "random-token": "0.0.8",
     "socket.io": "^4.0.0",
