@@ -118,6 +118,8 @@ app.get('/api/:version/:one', (req, res) => {
                   db.run("INSERT INTO links (short, url, expiry, key, sub, views) VALUES('" + token + "', '" + req.query.url + "', " + date + ", '" + randomToken(6) + "', '" + req.query.sub + "', 0);");
                   res.send({ short: token, expiry: date, url: req.query.url, complete_shorten_url: "https://" + req.query.sub + ".compact.ml/" + token, shorten_url: req.query.sub + ".compact.ml/" + token });
                   console.log("New API usage: [create] short: " + req.query.short, ', url: ' + req.query.url, ', sub: ' + req.query.sub);
+
+                  utils.mixpanel('create', { req, short: token, url: req.query.url, sub: req.query.sub });
                 }
                 else {
                   res.send({ error: "no short specified" });
@@ -139,11 +141,13 @@ app.get('/api/:version/:one', (req, res) => {
 
                   db.run("INSERT INTO links (short, url, expiry, key, views) VALUES('" + token + "', '" + req.query.url + "', " + date + ", '" + randomToken(6) + "', 0);");
                   res.send({ short: token, expiry: date, url: req.query.url, complete_shorten_url: "https://compact.ml/" + token, shorten_url: "compact.ml/" + token });
+                  utils.mixpanel('create', { req, short: rows[0].short, url: req.query.url });
                 })
 
               }
               else {
                 res.send({ short: rows[0].short, expiry: date, url: req.query.url, complete_shorten_url: "https://compact.ml/" + rows[0].short, shorten_url: "compact.ml/" + rows[0].short });
+                utils.mixpanel('create', { req, short: rows[0].short, url: req.query.url });
               }
             })
           }
@@ -175,9 +179,6 @@ app.get('/:id', (req, res) => {
     db.run("UPDATE info SET requests = '" + (row.requests + 1) + "' WHERE requests = '" + row.requests + "'")
     requests = (row.requests + 1)
   })
-  db.all("SELECT COUNT(short) AS sum FROM links", [], (err, rows) => {
-    io.emit('bottomInfoDock', { connections: connections, requests: requests, shorts: rows[0].sum })
-  })
 
   var date = moment().add(180, 'days').unix();
 
@@ -186,6 +187,7 @@ app.get('/:id', (req, res) => {
   subdomain = subdomain.replace('compact', '');
   if (subdomain) {
     subdomain = subdomain.split('.')[0]
+
     db.all("SELECT * FROM links WHERE short = '" + req.params.id + "' AND sub = '" + subdomain + "'", [], (err, rows) => {
       if (rows.length == 0) {
         res.render('index.ejs')
@@ -194,8 +196,6 @@ app.get('/:id', (req, res) => {
         db.run("UPDATE links SET expiry = '" + date + "', views = '" + (rows[0].views + 1) + "' WHERE short = '" + req.params.id + "' AND sub = '" + subdomain + "'")
 
         res.redirect(rows[0].url)
-
-        //res.render('redirect.ejs', { type: 'suburl', redirect: rows[0].url })
       }
     })
   }
@@ -216,6 +216,7 @@ app.get('/:id', (req, res) => {
       }
       else {
         db.run("UPDATE links SET expiry = '" + date + "', views = '" + (rows[0].views + 1) + "' WHERE short = '" + req.params.id + "'");
+        utils.mixpanel('redirect', { req, short: req.params.id, url: rows[0].url });
         res.render('redirect.ejs', { type: 'url', redirect: rows[0].url });
       }
     })
@@ -225,11 +226,7 @@ app.get('/:id', (req, res) => {
 
 io.on('connection', (socket) => {
   utils.log('socket', 'connected', `(${io.engine.clientsCount})`);
-  utils.mixpanel('connection', {
-    id: socket.id,
-    ip: socket.request.connection.remoteAddress,
-    clients: io.engine.clientsCount
-  });
+  utils.mixpanel('connection', { socket });
 
   socket.on('disconnect', () => {
     utils.log('socket', 'disconnected', `(${io.engine.clientsCount})`);
@@ -251,9 +248,11 @@ io.on('connection', (socket) => {
         if (rows.length == 0) {
           db.run("INSERT INTO links (short, url, expiry, key, views) VALUES('" + token + "', '" + value + "', " + date + ", '" + randomToken(6) + "', 0);");
           socket.emit('successfullyCreated', token);
+          utils.mixpanel('create', { socket, short: token, url: value });
         }
         else {
           socket.emit('successfullyCreated', rows[0].short);
+          utils.mixpanel('create', { socket, short: rows[0].short, url: value });
         }
       })
 

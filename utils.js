@@ -7,7 +7,15 @@ module.exports = {
     console.log(`[${event}]`.yellow, ...args);
   },
   mixpanel(event, data) {
-    console.log(data);
+    if (data.socket) {
+      data.ip = data.socket.request.connection.remoteAddress;
+      data.socket_id = data.socket.id;
+      delete data.socket;
+    }
+    if (data.req) {
+      data.ip = data.req.headers['x-forwarded-for'] || data.req.socket.remoteAddress
+      delete data.req;
+    }
 
     mixpanel.track(event, {
       ...data,
