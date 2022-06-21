@@ -24,6 +24,8 @@ var moment = require('moment');
 var randomToken = require('random-token').create('abcdefghijklmnopqrstuvwxzyABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789');
 const io = require('socket.io')(https);
 
+const utils = require('./utils');
+
 app2.get('*', function (req, res) {
   res.redirect("https://" + req.hostname + req.url)
 })
@@ -43,7 +45,7 @@ app.get('/', function (req, res) {
         allViews[item.sub] += item.views;
       });
 
-      res.render('index.ejs', { connections: connections, shorts: count[0].sum, requests: requests, partners: allViews });
+      res.render('index.ejs', { connections: io.engine.clientsCount, shorts: count[0].sum, requests: requests, partners: allViews });
     })
   })
 
@@ -221,22 +223,16 @@ app.get('/:id', function (req, res) {
 
 })
 
-var connections = 0;
-var requests = 0;
-io.on('connection', function (socket) {
-  connections++
+io.on('connection', (socket) => {
 
   db.all("SELECT COUNT(short) AS sum FROM links", [], (err, rows) => {
-    io.emit('bottomInfoDock', { connections: connections, requests: requests, shorts: rows[0].sum })
+    io.emit('bottomInfoDock', { connections: io.engine.clientsCount, requests: requests, shorts: rows[0].sum })
   })
 
-  console.log('A user connected')
-  socket.on('disconnect', function () {
-    connections--
-    db.all("SELECT COUNT(short) AS sum FROM links", [], (err, rows) => {
-      io.emit('bottomInfoDock', { connections: connections, requests: requests, shorts: rows[0].sum });
-    })
-    console.log('A user disconnected');
+  utils.log('socket', 'connected', `(${io.engine.clientsCount})`);
+
+  socket.on('disconnect', () => {
+    utils.log('socket', 'disconnected', `(${io.engine.clientsCount})`);
   });
 
   socket.on('checkUrl', (value) => {
